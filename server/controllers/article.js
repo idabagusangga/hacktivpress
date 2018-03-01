@@ -77,8 +77,83 @@ class ArticleController {
   }
   static remove (req, res) {
     if(req.body.token){
-      
+      ArticleModel.remove({
+        _id: req.params.id
+      })
+      .then(response => {
+        res.status(200).json({
+          msg: 'article deleted',
+          data: response
+        })
+      })
+      .catch(err => {
+        res.status(500).json({
+          msg: 'unable to remove',
+          err: err
+        })
+      })
     }else{
+      res.status(500).json({
+        msg: 'no token'
+      })
+    }
+  }
+  static findOneArticle (req, res) {
+    if(req.body.token) {
+      ArticleModel.find({
+        _id:req.params.id
+      })
+      .then(response => {
+        res.status(200).json({
+          msg: 'got article',
+          data: response
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    } else {
+      res.status(500).json({
+        msg: 'no token'
+      })
+    }
+  }
+  static searchCategory (req, res) {
+    if(req.body.token) {
+      ArticleModel.find({
+        category:req.body.category
+      }).populate('author')
+      .then(response => {
+        res.status(200).json({
+          msg: 'got article',
+          data: response
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    } else {
+      res.status(500).json({
+        msg: 'no token'
+      })
+    }
+  }
+  static searchAuthor (req, res) {
+    if(req.body.token) {
+      ArticleModel.find().populate('author')
+      .then(response => {
+        let result = response.filter(article => 
+          article.author[0].username == req.body.username
+        )
+        res.status(200).json({
+          msg: 'authors',
+          data: result
+        })
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    } else {
       res.status(500).json({
         msg: 'no token'
       })
