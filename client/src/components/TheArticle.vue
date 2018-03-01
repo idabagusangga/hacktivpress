@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="container">
+  <div class="container" v-else>
       <h1>ini The Article</h1>
       <router-link :to="{ name: 'ArticleList', params: {} }"><< Back to List</router-link>
       <div class="card mb-3">
@@ -13,14 +13,14 @@
   </div>
   <div class="card-body">
     <a href="#" class="card-link" v-if="auth" @click="removeArticle">Remove</a>
-    <a href="#" class="card-link" v-if="auth">Edit</a>
+    <a href="#" class="card-link" v-if="auth" @click="editMode">Edit</a>
   </div>
   <div class="card-footer text-muted">
     2 days ago
   </div>
 </div>
 <div class="container" v-if="isEditing">
-  <h3>Editing</h3>
+  <h3>Editing {{getActiveArticle[0].title}}</h3>
   <div class="form-group">
     <label for="exampleInputPassword1">Title</label>
     <input type="text" class="form-control" id="exampleInputTitle" placeholder="title" v-model="title">
@@ -33,7 +33,7 @@
     <label for="exampleTextarea">Description</label>
     <textarea class="form-control" id="exampleTextarea" rows="3" v-model="description"></textarea >
   </div>
-    <button type="button" class="btn btn-success" @click="postNewBlog">Post</button>
+    <button type="button" class="btn btn-success" @click="updatePost">Post</button>
 </div>
   </div>
 
@@ -43,7 +43,10 @@
 export default {
   data () {
     return {
-      isEditing: false
+      isEditing: false,
+      title: '',
+      category: '',
+      description: ''
     }
   },
   props: ['id'],
@@ -54,6 +57,19 @@ export default {
     removeArticle () {
       this.$store.dispatch('removeArticle', this.id)
       this.$router.push('/')
+    },
+    editMode () {
+      this.isEditing = true
+    },
+    updatePost () {
+      let payload = {
+        id: this.id,
+        title: this.title,
+        category: this.category,
+        description: this.description,
+        token: localStorage.getItem('token')
+      }
+      this.$store.dispatch('editArticle', payload)
     }
   },
   created () {

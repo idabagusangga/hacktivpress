@@ -7,6 +7,8 @@
         <LoginForm></LoginForm>
         <br><br>
         <PostNew></PostNew>
+        <br><br>
+        <SearchBar></SearchBar>
       </div>
       <div class="col-md-6" id="kanan">
         <h1>kanan</h1>
@@ -19,6 +21,7 @@
 </template>
 
 <script>
+import SearchBar from '@/components/SearchBar'
 import LoginForm from '@/components/LoginForm'
 import PostNew from '@/components/PostNew'
 export default {
@@ -30,7 +33,8 @@ export default {
   },
   components: {
     LoginForm: LoginForm,
-    PostNew: PostNew
+    PostNew: PostNew,
+    SearchBar: SearchBar
   }
 }
 </script>

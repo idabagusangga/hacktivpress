@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="container">
-    <div class="" v-if="loginState">
+    <div class="" v-if="!loginState">
       <h5>{{registrationMsg}}</h5>
       <div class="form-group">
       <label for="exampleInputEmail1">Username</label>
@@ -15,7 +15,7 @@
     or
   <button type="button" class="btn btn-info" @click="register">Register</button>
     </div>
-    <div class="" v-else>
+    <div class="" v-if="loginState">
       <h4>Welcome {{activeUser.username}}</h4>
       
     </div>

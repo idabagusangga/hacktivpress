@@ -8,7 +8,7 @@ export default new Vuex.Store({
   state: {
     articles: [],
     errorMsg: '',
-    isLogin: null,
+    isLogin: '',
     regisMsg: null,
     activeUser: null,
     activeArticle: null
@@ -81,6 +81,7 @@ export default new Vuex.Store({
         .then(response => {
           console.log(response.data.data)
           commit('SET_ACTIVE_USER', response.data.data)
+          commit('SET_LOGIN_STATE', true)
         })
         .catch(err => {
           commit('SET_ERROR_MSG', err)
@@ -110,6 +111,35 @@ export default new Vuex.Store({
       axios.delete(`http://localhost:3000/articles/${payload}`)
         .then(response => {
           commit('DELETE_ARTICLE', payload)
+        })
+        .catch(err => {
+          commit('SET_ERROR_MSG', err)
+        })
+    },
+    editArticle ({ commit }, payload) {
+      axios.put(`http://localhost:3000/articles/${payload.id}`, payload)
+        .then(response => {
+          alert('article updated')
+          this.$router.push({name: 'ArticleList'})
+        })
+        .catch(err => {
+          commit('SET_ERROR_MSG', err)
+        })
+    },
+    searchAuthor ({ commit }, payload) {
+      axios.post(`http://localhost:3000/articles/author`, payload)
+        .then(response => {
+          commit('SET_ARTICLES', response.data.data)
+        })
+        .catch(err => {
+          commit('SET_ERROR_MSG', err)
+        })
+    },
+    searchCategories ({ commit }, payload) {
+      console.log(payload)
+      axios.post(`http://localhost:3000/articles/category`, payload)
+        .then(response => {
+          commit('SET_ARTICLES', response.data.data)
         })
         .catch(err => {
           commit('SET_ERROR_MSG', err)
