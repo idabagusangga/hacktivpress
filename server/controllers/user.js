@@ -62,6 +62,14 @@ class UserController {
       console.log(err);
     })
   }
+  static findOne (req, res) {
+    if(req.body.token) {
+      let decoded = jwt.verify(req.body.token, process.env.SECRET)
+      res.status(200).json({
+        data: decoded
+      })
+    }
+  }
 }
 
 

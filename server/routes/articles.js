@@ -3,6 +3,7 @@ var router = express.Router();
 const articleController = require('../controllers/article')
 
 router.get('/', articleController.all)
+router.get('/search/:id', articleController.findOneArticle)
 router.post('/', articleController.create)
 router.put('/:id', articleController.update)
 router.delete('/:id', articleController.remove)
