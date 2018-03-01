@@ -11,9 +11,9 @@
     </div>
     <div class="form-group">
       <label for="exampleTextarea">Description</label>
-      <textarea class="form-control" id="exampleTextarea" rows="3"></textarea v-model="description">
+      <textarea class="form-control" id="exampleTextarea" rows="3" v-model="description"></textarea >
     </div>
-      <button type="button" class="btn btn-success">Post</button>
+      <button type="button" class="btn btn-success" @click="postNewBlog">Post</button>
   </div>
 </template>
 
@@ -24,6 +24,23 @@ export default {
       title: '',
       category: '',
       description: ''
+    }
+  },
+  methods: {
+    postNewBlog () {
+      let payload = {
+        title: this.title,
+        category: this.category,
+        description: this.description,
+        author: this.userInfo.id,
+        token: localStorage.getItem('token')
+      }
+      this.$store.dispatch('postBlog', payload)
+    }
+  },
+  computed: {
+    userInfo () {
+      return this.$store.state.activeUser
     }
   }
 }

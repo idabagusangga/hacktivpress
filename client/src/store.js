@@ -9,7 +9,8 @@ export default new Vuex.Store({
     articles: [],
     errorMsg: '',
     isLogin: null,
-    regisMsg: null
+    regisMsg: null,
+    activeUser: null
   },
   mutations: {
     SET_ARTICLES (state, payload) {
@@ -20,6 +21,16 @@ export default new Vuex.Store({
     },
     SET_LOGIN_STATE (state, payload) {
       state.isLogin = payload
+    },
+    SET_REGIS_MSG (state, payload) {
+      state.regisMsg = payload
+    },
+    SET_ACTIVE_USER (state, payload) {
+      state.activeUser = payload
+    },
+    NEW_ARTICLE (state, payload) {
+      payload.author = state.activeUser.username
+      state.articles.unshift(payload)
     }
   },
   actions: {
@@ -46,8 +57,32 @@ export default new Vuex.Store({
     register ({ commit }, payload) {
       axios.post('http://localhost:3000/users/register', payload)
         .then(response => {
+          commit('SET_REGIS_MSG', response.data.msg)
         })
-        .catch()
+        .catch(err => {
+          commit('SET_ERROR_MSG', err)
+        })
+    },
+    getUserInfo ({ commit }) {
+      let token = localStorage.getItem('token')
+      axios.post('http://localhost:3000/users', {token: token})
+        .then(response => {
+          console.log(response.data.data)
+          commit('SET_ACTIVE_USER', response.data.data)
+        })
+        .catch(err => {
+          commit('SET_ERROR_MSG', err)
+        })
+    },
+    postBlog ({ commit }, payload) {
+      console.log(payload)
+      axios.post('http://localhost:3000/articles', payload)
+        .then(response => {
+          commit('NEW_ARTICLE', response.data.data)
+        })
+        .catch(err => {
+          commit('SET_ERROR_MSG', err)
+        })
     }
   }
 })
