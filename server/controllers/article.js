@@ -109,7 +109,7 @@ class ArticleController {
       })
   }
   static searchCategory (req, res) {
-    if(req.body.token) {
+
       ArticleModel.find({
         category:req.body.category
       }).populate('author')
@@ -122,14 +122,13 @@ class ArticleController {
       .catch(err => {
         console.log(err)
       })
-    } else {
+
       res.status(500).json({
         msg: 'no token'
       })
-    }
   }
   static searchAuthor (req, res) {
-    if(req.body.token) {
+
       ArticleModel.find().populate('author')
       .then(response => {
         let result = response.filter(article => 
@@ -143,11 +142,10 @@ class ArticleController {
       .catch(err => {
         console.log(err);
       })
-    } else {
+
       res.status(500).json({
         msg: 'no token'
       })
-    }
   }
 }
 
