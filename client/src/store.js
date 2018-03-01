@@ -10,7 +10,8 @@ export default new Vuex.Store({
     errorMsg: '',
     isLogin: null,
     regisMsg: null,
-    activeUser: null
+    activeUser: null,
+    activeArticle: null
   },
   mutations: {
     SET_ARTICLES (state, payload) {
@@ -30,7 +31,18 @@ export default new Vuex.Store({
     },
     NEW_ARTICLE (state, payload) {
       payload.author = state.activeUser.username
+      // console.log(payload)
       state.articles.unshift(payload)
+    },
+    SET_ACTIVE_ARTICLE (state, payload) {
+      state.activeArticle = payload
+    },
+    DELETE_ARTICLE (state, payload) {
+      state.articles.forEach((article, index) => {
+        if (article._id === payload) {
+          state.articles.splice(index, 1)
+        }
+      })
     }
   },
   actions: {
@@ -79,6 +91,25 @@ export default new Vuex.Store({
       axios.post('http://localhost:3000/articles', payload)
         .then(response => {
           commit('NEW_ARTICLE', response.data.data)
+        })
+        .catch(err => {
+          commit('SET_ERROR_MSG', err)
+        })
+    },
+    getOneArticle ({ commit }, payload) {
+      axios.get(`http://localhost:3000/articles/search/${payload}`)
+        .then(response => {
+          console.log(response.data.data)
+          commit('SET_ACTIVE_ARTICLE', response.data.data)
+        })
+        .catch(err => {
+          commit('SET_ERROR_MSG', err)
+        })
+    },
+    removeArticle ({ commit }, payload) {
+      axios.delete(`http://localhost:3000/articles/${payload}`)
+        .then(response => {
+          commit('DELETE_ARTICLE', payload)
         })
         .catch(err => {
           commit('SET_ERROR_MSG', err)
