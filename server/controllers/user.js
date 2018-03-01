@@ -1,5 +1,6 @@
 const UserModel = require('../models/user')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 class UserController {
   static all (req, res) {
@@ -40,16 +41,26 @@ class UserController {
       username: req.body.username
     })
     .then(response => {
-      let payload = {
-        username: response[0].username
-      }
-      let token = jwt.sign(payload, process.env.SECRET)
-      res.status(200).json({
-        msg: 'login sucessful',
-        token: token
+      bcrypt.compare(req.body.password, response[0].password)
+      .then(result => {
+        let payload = {
+          id: response[0]._id,
+          username: response[0].username
+        }
+        let token = jwt.sign(payload, process.env.SECRET)
+        res.status(200).json({
+          msg: 'login sucessful',
+          token: token
+        })
       })
+      .catch(err => {
+        console.log(err);
+      })
+
     })
-    .catch()
+    .catch(err => {
+      console.log(err);
+    })
   }
 }
 
